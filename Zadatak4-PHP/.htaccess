@@ -1,0 +1,10 @@
+SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
+
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^orders$  Controller/zadatak4-1.php  [L]
+RewriteRule ^add/product$  Controller/zadatak4-2.php?product  [L]
+RewriteRule ^add/user$  Controller/zadatak4-2.php?user  [L]

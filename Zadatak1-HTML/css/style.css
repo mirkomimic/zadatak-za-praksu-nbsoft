@@ -1,0 +1,15 @@
+body {
+  background-image: url("../img/High_resolution_wallpaper_background_ID_77701390907.jpg");
+  background-attachment: fixed;
+  background-position: center;
+}
+
+.b-color {
+  border-top: 5px solid #428ccb;
+}
+.bg-color {
+  background-color: #737c853b;
+}
+.bg-blur {
+  backdrop-filter: blur(10px);
+}
