@@ -7,13 +7,57 @@ require_once "../Model/User.php";
 $conn = DB::connectDB();
 
 
+if (!isset($_SERVER['HTTP_AUTHORIZATION']) || strlen($_SERVER['HTTP_AUTHORIZATION']) < 1)
+{
+  $response = new Response();
+  $response->set_httpStatusCode(401); // za autorizaciju
+  $response->set_success(false);
+  $response->set_message("Authorization token cannot be blank or must be set");
+  $response->send();
+  exit;
+}
+$accesstoken = $_SERVER['HTTP_AUTHORIZATION'];
+// var_dump($accesstoken);
+
+$query = "SELECT tblsessions.userId, tblsessions.accessexpiry
+          FROM users, tblsessions
+          WHERE tblsessions.userId = users.id
+          AND tblsessions.accesstoken ='$accesstoken'";
+$result = $conn->query($query);
+// var_dump($result);
+$rowCount = mysqli_num_rows($result);
+if ($rowCount == 0)
+{
+  $response = new Response();
+  $response->set_httpStatusCode(401);
+  $response->set_success(false);
+  $response->set_message("Access token not valid");
+  $response->send();
+  exit;
+}
+$row = $result->fetch_assoc();
+$userid = $row['userId'];
+$accessexpiry = $row['accessexpiry'];
+
+if (strtotime($accessexpiry) < time())
+{
+  $response = new Response();
+  $response->set_httpStatusCode(401);
+  $response->set_success(false);
+  $response->set_message("Access token expired");
+  $response->send();
+  exit;
+}
+
+
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
   // create product
   if (isset($_GET['product']))
   {
-    echo "hi";
+
     if ($_SERVER['CONTENT_TYPE'] !== "application/json")
     {
       $response = new Response();
@@ -48,7 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
       exit();
     }
 
-    // $newProduct = new Product(null, $jsonData->name, $jsonData->price);
     Product::store($conn, $jsonData->name, $jsonData->price);
     $response = new Response();
     $response->set_httpStatusCode(200);

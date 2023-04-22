@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <title>Form validation</title>
+  </head>
+  <body>
+    <!-- <form action="">
+      <input type="radio" name="" id="" checked />
+    </form> -->
+    <div class="col-4 mx-auto mt-5">
+      <div id="form-success"></div>
+      <form id="form">
+        <!-- ime, prezime -->
+        <div class="mb-3">
+          <label for="ime" class="form-label">Ime</label>
+          <input type="text" class="form-control" id="ime" />
+          <div id="imeError" class="text-danger"></div>
+        </div>
+        <div class="mb-3">
+          <label for="Prezime" class="form-label">Prezime</label>
+          <input type="text" class="form-control" id="prezime" />
+          <div id="prezimeError" class="text-danger"></div>
+        </div>
+        <!-- pol -->
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="check" id="checkMale" value="male" />
+          <label class="form-check-label" for="checkMale"> Male </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="check" id="checkFemale" value="female" />
+          <label class="form-check-label" for="checkFemale"> Female </label>
+        </div>
+        <div id="polError" class="text-danger"></div>
+
+        <!-- godina rodjenja -->
+        <div class="mb-3">
+          <label for="godinaRodjenja" class="form-label">Grad</label>
+          <select class="form-select" id="godinaRodjenja" name="godinaRodjenja">
+            <option value="" disabled selected>Izaberi godinu:</option>
+            <option value="1988">1988</option>
+            <option value="1989">1989</option>
+            <option value="1990">1990</option>
+          </select>
+          <div id="godRodjenjaError" class="text-danger"></div>
+        </div>
+
+        <!-- grad -->
+        <div class="mb-3">
+          <label for="grad" class="form-label">Grad</label>
+          <select class="form-select" id="grad" name="grad">
+            <option value="" disabled selected>Izaberi grad:</option>
+            <option value="bg">Beograd</option>
+            <option value="ns">Novi Sad</option>
+            <option value="nis">Nis</option>
+          </select>
+          <div id="gradError" class="text-danger"></div>
+        </div>
+        <!-- adresa -->
+        <div class="mb-3">
+          <label for="adresa" class="form-label">Adresa</label>
+          <textarea class="form-control" id="adresa" name="adresa" rows="3"></textarea>
+          <div id="adresaError" class="text-danger"></div>
+        </div>
+
+        <div class="form-check2">
+          <input class="form-check-input2" type="checkbox" value="php" id="php" />
+          <label class="form-check-label" for="php"> PHP </label>
+        </div>
+        <div class="form-check2">
+          <input class="form-check-input2" type="checkbox" value="javascript" id="javascript" />
+          <label class="form-check-label" for="javascript"> Javascript </label>
+        </div>
+        <div class="form-check2">
+          <input class="form-check-input2" type="checkbox" value="java" id="java" />
+          <label class="form-check-label" for="java"> Java</label>
+        </div>
+        <div id="jezikError" class="text-danger"></div>
+
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+      </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/script.js"></script>
+  </body>
+</html>
