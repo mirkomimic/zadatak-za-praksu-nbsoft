@@ -2,6 +2,7 @@
 
 require_once "../db.php";
 require_once "../Model/Response.php";
+require_once "../Model/Session.php";
 
 $conn = DB::connectDB();
 
@@ -52,8 +53,7 @@ if (!isset($jsonData->email))
 }
 $email = $jsonData->email;
 
-$query = "SELECT * FROM users WHERE email='$email'";
-$result = $conn->query($query);
+$result = Session::getUserByEmail($conn, $email);
 $rowCount = mysqli_num_rows($result);
 
 if ($rowCount == 0)
@@ -68,16 +68,11 @@ if ($rowCount == 0)
 
 $row = $result->fetch_assoc();
 $id = $row['id'];
-// $firstname = $row['firstname'];
-// $lastname = $row['lastname'];
-// $phone = $row['phone'];
-// $email = $row['email'];
 
 $accesstoken = base64_encode(bin2hex(openssl_random_pseudo_bytes(24)));
 $access_expiry = 2800;
 
-$query = "INSERT INTO tblsessions (userId, accesstoken, accessexpiry) VALUES ($id, '$accesstoken', DATE_ADD(NOW(), INTERVAL $access_expiry SECOND))";
-$conn->query($query);
+Session::login($conn, $id, $accesstoken, $access_expiry);
 
 $returnData = [];
 $returnData['accesstoken'] = $accesstoken;

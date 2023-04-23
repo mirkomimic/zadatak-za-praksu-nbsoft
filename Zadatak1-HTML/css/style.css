@@ -8,6 +8,8 @@ body {
   background-image: url("../img/High_resolution_wallpaper_background_ID_77701390907.jpg");
   background-attachment: fixed;
   background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .b-color {

@@ -3,6 +3,10 @@ require_once "../db.php";
 require_once "../Model/Product.php";
 require_once "../Model/Response.php";
 require_once "../Model/User.php";
+require_once "../Model/Session.php";
+require_once "../Model/Order.php";
+require_once "../Model/OrderItem.php";
+require_once "../Resources/OrderResource.php";
 
 $conn = DB::connectDB();
 
@@ -10,21 +14,17 @@ $conn = DB::connectDB();
 if (!isset($_SERVER['HTTP_AUTHORIZATION']) || strlen($_SERVER['HTTP_AUTHORIZATION']) < 1)
 {
   $response = new Response();
-  $response->set_httpStatusCode(401); // za autorizaciju
+  $response->set_httpStatusCode(401);
   $response->set_success(false);
   $response->set_message("Authorization token cannot be blank or must be set");
   $response->send();
   exit;
 }
 $accesstoken = $_SERVER['HTTP_AUTHORIZATION'];
-// var_dump($accesstoken);
 
-$query = "SELECT tblsessions.userId, tblsessions.accessexpiry
-          FROM users, tblsessions
-          WHERE tblsessions.userId = users.id
-          AND tblsessions.accesstoken ='$accesstoken'";
-$result = $conn->query($query);
-// var_dump($result);
+$result = Session::checkToken($conn, $accesstoken);
+
+
 $rowCount = mysqli_num_rows($result);
 if ($rowCount == 0)
 {
@@ -37,6 +37,7 @@ if ($rowCount == 0)
 }
 $row = $result->fetch_assoc();
 $userid = $row['userId'];
+
 $accessexpiry = $row['accessexpiry'];
 
 if (strtotime($accessexpiry) < time())
@@ -100,9 +101,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     $response->send();
   }
 
-
-  // register user
-  if (isset($_GET['user']))
+  // create order
+  //   [
+  //     {
+  //         "id": "1"
+  //     },
+  //     {
+  //         "id": "1"
+  //     }
+  // ]
+  if (isset($_GET['order']))
   {
     if ($_SERVER['CONTENT_TYPE'] !== "application/json")
     {
@@ -113,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
       $response->send();
       exit();
     }
+
 
     $rawPostData = file_get_contents('php://input');
     if (!$jsonData = json_decode($rawPostData))
@@ -125,28 +134,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
       exit();
     }
 
-    if (!isset($jsonData->firstname) || !isset($jsonData->lastname) || !isset($jsonData->phone) || !isset($jsonData->email))
+
+    foreach ($jsonData as $data)
     {
-      $response = new Response();
-      $response->set_httpStatusCode(400);
-      $response->set_success(false);
-      if (!isset($jsonData->firstname))
-        $response->set_message("Firstname field is mandatory and must be provided");
-      if (!isset($jsonData->lastname))
-        $response->set_message("Lastname field is mandatory and must be provided");
-      if (!isset($jsonData->phone))
-        $response->set_message("Phone field is mandatory and must be provided");
-      if (!isset($jsonData->email))
-        $response->set_message("Email field is mandatory and must be provided");
-      $response->send();
-      exit();
+      if (!isset($data->id))
+      {
+        $response = new Response();
+        $response->set_httpStatusCode(400);
+        $response->set_success(false);
+        if (!isset($jsonData->name))
+          $response->set_message("ID field is mandatory and must be provided");
+        $response->send();
+        exit();
+      }
     }
 
-    User::store($conn, $jsonData->firstname, $jsonData->lastname, $jsonData->phone, $jsonData->email);
+    $lastOrderId = Order::createOrder($conn, $jsonData, $userid);
+
+    $order = Order::getOrderById($conn, $lastOrderId);
+
+    $orderResource = new OrderResource($conn, $order);
+
     $response = new Response();
     $response->set_httpStatusCode(200);
     $response->set_success(true);
-    $response->set_message("User registered!");
+    $response->set_message("Order created!");
+    $response->set_data($orderResource);
     $response->send();
+    exit();
   }
 }

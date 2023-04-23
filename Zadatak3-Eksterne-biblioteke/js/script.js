@@ -6,5 +6,7 @@ $(document).ready(function () {
     fade: true,
     arrows: true,
     dots: true,
+    prevArrow: ".arrow_prev",
+    nextArrow: ".arrow_next",
   });
 });

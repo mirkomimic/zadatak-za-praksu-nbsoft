@@ -3,13 +3,14 @@
 .img {
   width: 500px;
   height: 500px;
+  margin: 0;
 }
 
 .slick-list {
   border: 5px solid black;
 }
 
-.slick-prev {
+/* .slick-prev {
   background-color: #0000003b;
   width: 50px;
   height: 50px;
@@ -27,24 +28,41 @@
   top: 50%;
   border-radius: 50%;
 }
+
 .slick-next:hover,
 .slick-prev:hover {
   background-color: #0000003b;
 }
 .slick-prev:before,
 .slick-next:before {
-  color: black !important;
-  font-family: "slick";
+  color: black;
 }
 
 .slick-next:focus,
 .slick-prev:focus {
   background-color: #0000003b;
-}
+} */
 
 .slick-dots li.slick-active button:before {
   font-size: 2rem;
 }
 .slick-dots li button:before {
   font-size: 2rem;
+}
+
+/* ////////////////////////// */
+
+.arrow_next {
+  background-color: rgb(0 0 0 / 65%);
+  border-radius: 50%;
+  color: aliceblue;
+  margin-left: 5px;
+  height: 2rem;
+}
+.arrow_prev {
+  background-color: rgb(0 0 0 / 65%);
+  border-radius: 50%;
+  color: aliceblue;
+  margin-right: 5px;
+  height: 2rem;
 }
