@@ -2,6 +2,7 @@
 
 class Order
 {
+  const TABLE = 'orders';
   public $id;
   public $userId;
   public $value;
@@ -34,6 +35,57 @@ class Order
     }
 
     return $orders;
+  }
+
+  public static function paginate($conn, int $page, $perPage)
+  {
+    $query = "SELECT count(id) as numOfOrders FROM orders";
+    $result = $conn->query($query);
+    $row = $result->fetch_assoc();
+    $ordersCount = intval($row['numOfOrders']);
+    $numOfPages = ceil($ordersCount / $perPage);
+
+    if ($numOfPages == 0)
+    {
+      $numOfPages = 1;
+    }
+
+    $offset = ($page == 1 ? 0 : $perPage * ($page - 1));
+    $query = "SELECT * FROM orders LIMIT $perPage offset $offset";
+    // $query = "SELECT * FROM orders";
+    $result2 = $conn->query($query);
+    $rowCount = $result2->num_rows;
+
+    $orders = [];
+    while ($row = $result2->fetch_assoc())
+    {
+
+      $order = new Order($row['id'], $row['userId'], $row['value'], $row['dateCreate'], $row['dateEdit']);
+
+      $orders[] = $order;
+    }
+
+    $data = [];
+    $data['current_page'] = $page;
+    $data['rows_returned'] = $rowCount;
+    $data['total_rows'] = $ordersCount;
+    $data['total_pages'] = $numOfPages;
+    $data['has_next_page'] = ($page < $numOfPages) ? true : false;
+    $data['has_previous_page'] = ($page > 1) ? true : false;
+    $data['orders'] = $orders;
+
+    if ($data['has_next_page'])
+    {
+      $page2 = $page + 1;
+      $data['links']['next_page'] = 'http://localhost/MirkoXAMPP/zadatak-za-praksu-NBSoft/Zadatak4-PHP/orders?page=' . $page2;
+    }
+    if ($data['has_previous_page'])
+    {
+      $page2 = $page - 1;
+      $data['links']['prev_page'] = 'http://localhost/MirkoXAMPP/zadatak-za-praksu-NBSoft/Zadatak4-PHP/orders?page=' . $page2;
+    }
+
+    return $data;
   }
 
   public static function getOrderProducts($conn, $orderId)

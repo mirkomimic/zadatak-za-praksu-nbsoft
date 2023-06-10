@@ -5,8 +5,10 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d 
 RewriteCond %{REQUEST_FILENAME} !-f
 
+RewriteRule ^orders/page/([0-9]+)$  Controller/zadatak4-1.php?page=$1 [L]
 RewriteRule ^orders$  Controller/zadatak4-1.php  [L]
 RewriteRule ^login$  Controller/login.php  [L]
 RewriteRule ^register$  Controller/register.php  [L]
 RewriteRule ^add/product$  Controller/zadatak4-2.php?product  [L]
 RewriteRule ^add/order$  Controller/zadatak4-2.php?order  [L]
+
