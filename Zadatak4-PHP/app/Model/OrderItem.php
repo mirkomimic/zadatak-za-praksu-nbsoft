@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Model;
+
 class OrderItem
 {
   private $id;

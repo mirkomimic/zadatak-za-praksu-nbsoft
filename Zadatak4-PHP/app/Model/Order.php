@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Model;
+
+use Exception;
+
 class Order
 {
   const TABLE = 'orders';
@@ -26,8 +30,7 @@ class Order
 
 
     $orders = [];
-    while ($row = $result->fetch_assoc())
-    {
+    while ($row = $result->fetch_assoc()) {
 
       $order = new Order($row['id'], $row['userId'], $row['value'], $row['dateCreate'], $row['dateEdit']);
 
@@ -37,7 +40,7 @@ class Order
     return $orders;
   }
 
-  public static function paginate($conn, int $page, $perPage)
+  public static function paginate($conn, int $page, $perPage): array
   {
     $query = "SELECT count(id) as numOfOrders FROM orders";
     $result = $conn->query($query);
@@ -45,8 +48,7 @@ class Order
     $ordersCount = intval($row['numOfOrders']);
     $numOfPages = ceil($ordersCount / $perPage);
 
-    if ($numOfPages == 0)
-    {
+    if ($numOfPages == 0) {
       $numOfPages = 1;
     }
 
@@ -57,8 +59,7 @@ class Order
     $rowCount = $result2->num_rows;
 
     $orders = [];
-    while ($row = $result2->fetch_assoc())
-    {
+    while ($row = $result2->fetch_assoc()) {
 
       $order = new Order($row['id'], $row['userId'], $row['value'], $row['dateCreate'], $row['dateEdit']);
 
@@ -74,13 +75,11 @@ class Order
     $data['has_previous_page'] = ($page > 1) ? true : false;
     $data['orders'] = $orders;
 
-    if ($data['has_next_page'])
-    {
+    if ($data['has_next_page']) {
       $page2 = $page + 1;
       $data['links']['next_page'] = 'http://localhost/MirkoXAMPP/zadatak-za-praksu-NBSoft/Zadatak4-PHP/orders?page=' . $page2;
     }
-    if ($data['has_previous_page'])
-    {
+    if ($data['has_previous_page']) {
       $page2 = $page - 1;
       $data['links']['prev_page'] = 'http://localhost/MirkoXAMPP/zadatak-za-praksu-NBSoft/Zadatak4-PHP/orders?page=' . $page2;
     }
@@ -93,8 +92,7 @@ class Order
     $query = 'SELECT * FROM order_item WHERE orderId=' . $orderId;
     $result = $conn->query($query);
     $orderItems = [];
-    while ($row = $result->fetch_assoc())
-    {
+    while ($row = $result->fetch_assoc()) {
       $orderItem = new OrderItem($row['id'], $row['orderId'], $row['productId'], $row['value']);
       $orderItems[] = $orderItem;
     }
@@ -121,8 +119,7 @@ class Order
   {
     $conn->begin_transaction();
 
-    try
-    {
+    try {
       $query = "INSERT INTO orders (userId, value, dateCreate, dateEdit) VALUES ($userid, 0, now(), now())";
       $conn->query($query);
       $orderId = $conn->insert_id;
@@ -130,10 +127,8 @@ class Order
       $totalValue = 0;
 
       $productsIds = Product::getProducts($conn);
-      foreach ($jsonData as $id)
-      {
-        if (in_array($id->id, $productsIds))
-        {
+      foreach ($jsonData as $id) {
+        if (in_array($id->id, $productsIds)) {
           $orderedItemValue = Product::getProductValue($conn, $id->id);
           $totalValue += $orderedItemValue;
 
@@ -145,9 +140,7 @@ class Order
       $conn->commit();
 
       return $orderId;
-    }
-    catch (Exception $ex)
-    {
+    } catch (Exception $ex) {
       $conn->rollback();
 
       $response = new Response();

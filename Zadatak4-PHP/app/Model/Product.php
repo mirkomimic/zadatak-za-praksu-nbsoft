@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Model;
+
 class Product
 {
 
@@ -25,8 +27,7 @@ class Product
     $productIds = [];
     $query = "SELECT * FROM products";
     $result = $conn->query($query);
-    while ($row = $result->fetch_assoc())
-    {
+    while ($row = $result->fetch_assoc()) {
       $productIds[] = $row['id'];
     }
     return $productIds;
@@ -37,8 +38,7 @@ class Product
     $productValue = 0;
     $query = "SELECT * FROM products WHERE id=$productId";
     $result = $conn->query($query);
-    while ($row = $result->fetch_assoc())
-    {
+    while ($row = $result->fetch_assoc()) {
       $productValue += $row['price'];
     }
     return $productValue;
@@ -50,8 +50,7 @@ class Product
 
     $orderItems = Order::getOrderProducts($conn, $order->id);
 
-    foreach ($orderItems as $orderItem)
-    {
+    foreach ($orderItems as $orderItem) {
       $items = Order::getProduct($conn, $orderItem->productId);
       $itemsResponse[] = $items;
     }
