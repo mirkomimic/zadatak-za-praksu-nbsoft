@@ -12,7 +12,7 @@ $conn = DB::connectDB();
 
 if (empty($_GET)) {
   if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $ordersCollection = OrderResource::collection($conn, Order::getAllOrders($conn));
+    $ordersCollection = OrderResource::collection($conn, Order::getAllOrders());
 
     $response = new Response();
     $response->set_httpStatusCode(200);
@@ -33,7 +33,7 @@ if (isset($_GET['page'])) {
   if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // try method chaining
     // https://stackoverflow.com/questions/3724112/php-method-chaining-or-fluent-interface
-    $ordersCollection = OrderResource::collection($conn, Order::getAllOrders($conn));
+    $ordersCollection = OrderResource::collection($conn, Order::getAllOrders());
 
     $ordersCollection = Paginator::paginate($ordersCollection, $page, 5);
 
