@@ -1,16 +1,14 @@
 <?php
-require_once "../db.php";
-require_once "../Model/Response.php";
-require_once "../Model/User.php";
 
+use App\Database\DB;
+use App\Models\User;
+use App\Models\Response;
 
 $conn = DB::connectDB();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST')
-{
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // register user
-  if ($_SERVER['CONTENT_TYPE'] !== "application/json")
-  {
+  if ($_SERVER['CONTENT_TYPE'] !== "application/json") {
     $response = new Response();
     $response->set_httpStatusCode(400);
     $response->set_success(false);
@@ -20,8 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
   }
 
   $rawPostData = file_get_contents('php://input');
-  if (!$jsonData = json_decode($rawPostData))
-  {
+  if (!$jsonData = json_decode($rawPostData)) {
     $response = new Response();
     $response->set_httpStatusCode(400);
     $response->set_success(false);
@@ -30,8 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     exit();
   }
 
-  if (!isset($jsonData->firstname) || !isset($jsonData->lastname) || !isset($jsonData->phone) || !isset($jsonData->email))
-  {
+  if (!isset($jsonData->firstname) || !isset($jsonData->lastname) || !isset($jsonData->phone) || !isset($jsonData->email)) {
     $response = new Response();
     $response->set_httpStatusCode(400);
     $response->set_success(false);

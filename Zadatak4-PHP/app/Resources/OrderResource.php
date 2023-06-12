@@ -2,7 +2,7 @@
 
 namespace App\Resources;
 
-use App\Model\Product;
+use App\Models\Product;
 
 class OrderResource
 {

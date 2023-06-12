@@ -1,14 +1,13 @@
 <?php
 
-require_once "../db.php";
-require_once "../Model/Response.php";
-require_once "../Model/Session.php";
+use App\Database\DB;
+use App\Models\Session;
+use App\Models\Response;
 
 $conn = DB::connectDB();
 
 
-if ($_SERVER['REQUEST_METHOD'] !== "POST")
-{
+if ($_SERVER['REQUEST_METHOD'] !== "POST") {
   $response = new Response();
   $response->set_httpStatusCode(405);
   $response->set_success(false);
@@ -19,8 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] !== "POST")
 
 sleep(1);
 
-if ($_SERVER['CONTENT_TYPE'] !== 'application/json')
-{
+if ($_SERVER['CONTENT_TYPE'] !== 'application/json') {
   $response = new Response();
   $response->set_httpStatusCode(400);
   $response->set_success(false);
@@ -32,8 +30,7 @@ if ($_SERVER['CONTENT_TYPE'] !== 'application/json')
 
 $rawPostData = file_get_contents('php://input');
 
-if (!$jsonData = json_decode($rawPostData))
-{
+if (!$jsonData = json_decode($rawPostData)) {
   $response = new Response();
   $response->set_httpStatusCode(400);
   $response->set_success(false);
@@ -42,8 +39,7 @@ if (!$jsonData = json_decode($rawPostData))
   exit;
 }
 
-if (!isset($jsonData->email))
-{
+if (!isset($jsonData->email)) {
   $response = new Response();
   $response->set_httpStatusCode(400);
   $response->set_success(false);
@@ -56,8 +52,7 @@ $email = $jsonData->email;
 $result = Session::getUserByEmail($conn, $email);
 $rowCount = mysqli_num_rows($result);
 
-if ($rowCount == 0)
-{
+if ($rowCount == 0) {
   $response = new Response();
   $response->set_httpStatusCode(409);
   $response->set_success(false);

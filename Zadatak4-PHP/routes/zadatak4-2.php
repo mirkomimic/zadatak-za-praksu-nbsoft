@@ -1,18 +1,18 @@
 <?php
-require_once "../db.php";
-require_once "../Model/Product.php";
-require_once "../Model/Response.php";
-require_once "../Model/User.php";
-require_once "../Model/Session.php";
-require_once "../Model/Order.php";
-require_once "../Model/OrderItem.php";
-require_once "../Resources/OrderResource.php";
+
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\Session;
+use App\Models\Response;
+use App\Resources\OrderResource;
+use App\Database\DB;
+
+require_once '../vendor/autoload.php';
 
 $conn = DB::connectDB();
 
 
-if (!isset($_SERVER['HTTP_AUTHORIZATION']) || strlen($_SERVER['HTTP_AUTHORIZATION']) < 1)
-{
+if (!isset($_SERVER['HTTP_AUTHORIZATION']) || strlen($_SERVER['HTTP_AUTHORIZATION']) < 1) {
   $response = new Response();
   $response->set_httpStatusCode(401);
   $response->set_success(false);
@@ -26,8 +26,7 @@ $result = Session::checkToken($conn, $accesstoken);
 
 
 $rowCount = mysqli_num_rows($result);
-if ($rowCount == 0)
-{
+if ($rowCount == 0) {
   $response = new Response();
   $response->set_httpStatusCode(401);
   $response->set_success(false);
@@ -40,8 +39,7 @@ $userid = $row['userId'];
 
 $accessexpiry = $row['accessexpiry'];
 
-if (strtotime($accessexpiry) < time())
-{
+if (strtotime($accessexpiry) < time()) {
   $response = new Response();
   $response->set_httpStatusCode(401);
   $response->set_success(false);
@@ -53,14 +51,11 @@ if (strtotime($accessexpiry) < time())
 
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST')
-{
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // create product
-  if (isset($_GET['product']))
-  {
+  if (isset($_GET['product'])) {
 
-    if ($_SERVER['CONTENT_TYPE'] !== "application/json")
-    {
+    if ($_SERVER['CONTENT_TYPE'] !== "application/json") {
       $response = new Response();
       $response->set_httpStatusCode(400);
       $response->set_success(false);
@@ -71,8 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
 
     $rawPostData = file_get_contents('php://input');
-    if (!$jsonData = json_decode($rawPostData))
-    {
+    if (!$jsonData = json_decode($rawPostData)) {
       $response = new Response();
       $response->set_httpStatusCode(400);
       $response->set_success(false);
@@ -80,8 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
       $response->send();
       exit();
     }
-    if (!isset($jsonData->name) || !isset($jsonData->price))
-    {
+    if (!isset($jsonData->name) || !isset($jsonData->price)) {
       $response = new Response();
       $response->set_httpStatusCode(400);
       $response->set_success(false);
@@ -110,10 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
   //         "id": "1"
   //     }
   // ]
-  if (isset($_GET['order']))
-  {
-    if ($_SERVER['CONTENT_TYPE'] !== "application/json")
-    {
+  if (isset($_GET['order'])) {
+    if ($_SERVER['CONTENT_TYPE'] !== "application/json") {
       $response = new Response();
       $response->set_httpStatusCode(400);
       $response->set_success(false);
@@ -124,8 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
 
     $rawPostData = file_get_contents('php://input');
-    if (!$jsonData = json_decode($rawPostData))
-    {
+    if (!$jsonData = json_decode($rawPostData)) {
       $response = new Response();
       $response->set_httpStatusCode(400);
       $response->set_success(false);
@@ -135,10 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     }
 
 
-    foreach ($jsonData as $data)
-    {
-      if (!isset($data->id))
-      {
+    foreach ($jsonData as $data) {
+      if (!isset($data->id)) {
         $response = new Response();
         $response->set_httpStatusCode(400);
         $response->set_success(false);

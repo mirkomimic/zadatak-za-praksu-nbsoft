@@ -1,8 +1,8 @@
 <?php
 
-use App\Model\Order;
-use App\Model\Response;
-use App\Model\Paginator;
+use App\Models\Order;
+use App\Models\Response;
+use App\Utilities\Paginator;
 use App\Resources\OrderResource;
 use App\Database\DB;
 
@@ -31,7 +31,8 @@ if (empty($_GET)) {
 if (isset($_GET['page'])) {
   $page = $_GET['page'];
   if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-
+    // try method chaining
+    // https://stackoverflow.com/questions/3724112/php-method-chaining-or-fluent-interface
     $ordersCollection = OrderResource::collection($conn, Order::getAllOrders($conn));
 
     $ordersCollection = Paginator::paginate($ordersCollection, $page, 5);
