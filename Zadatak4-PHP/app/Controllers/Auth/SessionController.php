@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Controllers\Auth;
 
-class Session
+class SessionController
 {
 
   public static function checkToken($conn, $token)

@@ -4,7 +4,7 @@ namespace App\Database;
 
 use mysqli;
 
-class DB
+class Db
 {
   protected static $conn;
 
@@ -13,10 +13,5 @@ class DB
     if (self::$conn == null)
       self::$conn = new mysqli('localhost', 'root', '', 'zadatak_nbsoft');
     return self::$conn;
-  }
-
-  public function __destruct()
-  {
-    self::$conn = NULL;
   }
 }

@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\Order;
-use App\Models\Product;
-use App\Models\Session;
-use App\Models\Response;
+use App\Controllers\Auth\SessionController;
+use App\Controllers\OrderController;
+use App\Controllers\ProductController;
+use App\Http\Response;
 use App\Resources\OrderResource;
 use App\Database\DB;
 
@@ -22,7 +22,7 @@ if (!isset($_SERVER['HTTP_AUTHORIZATION']) || strlen($_SERVER['HTTP_AUTHORIZATIO
 }
 $accesstoken = $_SERVER['HTTP_AUTHORIZATION'];
 
-$result = Session::checkToken($conn, $accesstoken);
+$result = SessionController::checkToken($conn, $accesstoken);
 
 
 $rowCount = mysqli_num_rows($result);
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       exit();
     }
 
-    Product::store($conn, $jsonData->name, $jsonData->price);
+    ProductController::store($conn, $jsonData->name, $jsonData->price);
     $response = new Response();
     $response->set_httpStatusCode(200);
     $response->set_success(true);
@@ -137,9 +137,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
 
-    $lastOrderId = Order::createOrder($conn, $jsonData, $userid);
+    $lastOrderId = OrderController::createOrder($conn, $jsonData, $userid);
 
-    $order = Order::getOrderById($conn, $lastOrderId);
+    $order = OrderController::getOrderById($conn, $lastOrderId);
 
     $orderResource = new OrderResource($conn, $order);
 

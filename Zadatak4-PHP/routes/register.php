@@ -1,8 +1,8 @@
 <?php
 
+use App\Controllers\UserController;
 use App\Database\DB;
-use App\Models\User;
-use App\Models\Response;
+use App\Http\Response;
 
 $conn = DB::connectDB();
 
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
   }
 
-  User::store($conn, $jsonData->firstname, $jsonData->lastname, $jsonData->phone, $jsonData->email);
+  UserController::store($conn, $jsonData->firstname, $jsonData->lastname, $jsonData->phone, $jsonData->email);
   $response = new Response();
   $response->set_httpStatusCode(200);
   $response->set_success(true);

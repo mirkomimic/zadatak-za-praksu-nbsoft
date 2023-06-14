@@ -1,8 +1,8 @@
 <?php
 
+use App\Controllers\Auth\SessionController;
 use App\Database\DB;
-use App\Models\Session;
-use App\Models\Response;
+use App\Http\Response;
 
 $conn = DB::connectDB();
 
@@ -49,7 +49,7 @@ if (!isset($jsonData->email)) {
 }
 $email = $jsonData->email;
 
-$result = Session::getUserByEmail($conn, $email);
+$result = SessionController::getUserByEmail($conn, $email);
 $rowCount = mysqli_num_rows($result);
 
 if ($rowCount == 0) {
@@ -67,7 +67,7 @@ $id = $row['id'];
 $accesstoken = base64_encode(bin2hex(openssl_random_pseudo_bytes(24)));
 $access_expiry = 2800;
 
-Session::login($conn, $id, $accesstoken, $access_expiry);
+SessionController::login($conn, $id, $accesstoken, $access_expiry);
 
 $returnData = [];
 $returnData['accesstoken'] = $accesstoken;

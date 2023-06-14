@@ -50,8 +50,10 @@ class Paginator
   private static function getUrl()
   {
     $url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-    $variable = "http://" . substr($url, 0, strpos($url, "=")) . "=";
+    if (!str_contains($url, "?"))
+      return $url . "?page=";
 
-    return $variable;
+    $url = "http://" . substr($url, 0, strpos($url, "=")) . "=";
+    return $url;
   }
 }
